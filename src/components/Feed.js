@@ -15,7 +15,7 @@ function FeedComponent(props) {
 
         fetch(`${url}/posts`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
             body: JSON.stringify(newPost),
         })
         .then(res => res.json())

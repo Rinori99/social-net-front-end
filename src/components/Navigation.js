@@ -3,6 +3,10 @@ import './profile-style.css'
 import { BrowserRouter as Router, Switch, Route, Link, ListItemLink } from 'react-router-dom';
 
 function NavigationComponent() {
+    const handleLogoutClick = () => {
+        localStorage.removeItem('token');
+    }
+
     return (
         <div className="navigation">
             <ul class="navigation-left">
@@ -10,7 +14,7 @@ function NavigationComponent() {
                 <a href="/browse/profile">Profile</a>
             </ul>
             <ul class="navigation-right">
-                <a href="/login">Log out</a>
+                <a onClick={ handleLogoutClick } href="/login">Log out</a>
             </ul>
         </div>
     )

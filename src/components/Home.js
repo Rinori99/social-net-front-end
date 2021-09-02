@@ -4,6 +4,7 @@ import Feed from '../components/Feed';
 import People from '../components/People';
 import Listing from '../components/Listing';
 import qs from 'qs';
+import { Redirect } from 'react-router-dom/cjs/react-router-dom';
 
 function mapHashtagsToListingItems(hashtags) {
     return hashtags.map(hashtag => {
@@ -15,8 +16,6 @@ function mapHashtagsToListingItems(hashtags) {
 }
 
 function HomeComponent(props) {
-
-    const principalId = "f54af9c2-cd04-40fb-b4c8-d4aeab26c040";
     const url = "http://localhost:5000";
     const [posts, setPosts] = useState(null);
     const [hashtags, setHashtags] = useState([]);
@@ -104,37 +103,38 @@ function HomeComponent(props) {
     }, []);
 
     return (
-        <div className="outer-container">
-            <div className="container">
-                <div className="profile-info">
-                    <div className="info-top">
-                        <span className="hashtag-big">#</span>
+        localStorage.getItem('token') ? (<div className="outer-container">
+                <div className="container">
+                    <div className="profile-info">
+                        <div className="info-top">
+                            <span className="hashtag-big">#</span>
+                            {
+                                retrieveHashtag() ? 
+                                <h1>{ retrieveHashtag() }</h1> 
+                                : (<div><p>Use hashtags to be found.</p> <p>Look for hashtags to find what you like.</p></div>)
+                            }
+                        </div>
+                        <div className="info-hashtag">
+                            <Listing items={ mapHashtagsToListingItems(hashtags) }></Listing>
+                        </div>
+                    </div>
+                    <div className="profile-feed">
                         {
-                            retrieveHashtag() ? 
-                            <h1>{ retrieveHashtag() }</h1> 
-                            : (<div><p>Use hashtags to be found.</p> <p>Look for hashtags to find what you like.</p></div>)
+                            posts ?
+                            (<Feed isHashtagPage={ retrieveHashtag() } posts={ posts } principalId={ localStorage.getItem('token') }></Feed>)
+                            : (<div>Loading...</div>)
                         }
                     </div>
-                    <div className="info-hashtag">
-                        <Listing items={ mapHashtagsToListingItems(hashtags) }></Listing>
+                    <div className="profile-friends">
+                        <div className="friends-header">
+                            <h3>Find people</h3>
+                            <input type="text" placeholder="search for someone..." className="sn-text-box" onChange={ handleChange }/>
+                        </div>
+                        <People friends={ filteredUsers }></People>
                     </div>
-                </div>
-                <div className="profile-feed">
-                    {
-                        posts ?
-                        (<Feed isHashtagPage={ retrieveHashtag() } posts={ posts } principalId={ principalId }></Feed>)
-                        : (<div>Loading...</div>)
-                    }
-                </div>
-                <div className="profile-friends">
-                    <div className="friends-header">
-                        <h3>Find people</h3>
-                        <input type="text" placeholder="search for someone..." className="sn-text-box" onChange={ handleChange }/>
-                    </div>
-                    <People friends={ filteredUsers }></People>
                 </div>
             </div>
-        </div>
+        ) : (<Redirect to="/login"></Redirect>)
     );
 }
 

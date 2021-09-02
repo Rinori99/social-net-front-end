@@ -5,6 +5,7 @@ import profilepic from '../resources/images/profile.jpeg';
 import Feed from '../components/Feed';
 import People from '../components/People';
 import Listing from '../components/Listing';
+import { Redirect } from 'react-router-dom/cjs/react-router-dom';
 
 function mapActivitiesToListingItems(activities) {
     return activities.map(activity => {
@@ -16,7 +17,6 @@ function mapActivitiesToListingItems(activities) {
 }
 
 function ProfileComponent() {
-    const principalId = "f54af9c2-cd04-40fb-b4c8-d4aeab26c040";
     const url = "http://localhost:5000";
     const [activities, setActivities] = useState([]);
     const [posts, setPosts] = useState(null);
@@ -46,7 +46,7 @@ function ProfileComponent() {
     }
 
     const isMyProfile = () => {
-        return !id || currentUser.id == id;
+        return !id;
     }
 
     const isMyFriend = () => {
@@ -86,24 +86,79 @@ function ProfileComponent() {
     }
 
     useEffect(() => {
-        const findPrincipalAndUser = async () => {
-            const currentUserRes = await fetch(`${url}/users/current`, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
-            }).then((res) => res.json());
-            setCurrentUser(currentUserRes);
+        // findUser  if id present => findUserById, else find currentUser
+        // findActivities  
 
-            if (isMyProfile()) {
-                setUser(currentUser);
-            } else {
-                const userRes = await fetch(`${url}/users/${id}`, {
+
+
+
+        const findAllData = async () => {
+            // const currentUserRes = await fetch(`${url}/users/current`, {
+            //     method: 'GET',
+            //     headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
+            // });
+            // setCurrentUser(currentUserRes.json());
+
+            if (id) {
+                await fetch(`${url}/users/${id}`, {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
-                }).then((res) => res.json());
-                setUser(userRes);
+                })
+                .then((res) => res.json())
+                .then((res) => setUser(res));
+            } else {
+                await fetch(`${url}/users/current`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
+                })
+                .then(res => res.json())
+                .then(res => setUser(res));
             }
+
+
+
+
+
+
+
+
+
+
+
+
+            // if (isMyProfile()) {
+            //     setUser(currentUser);
+            // } else {
+            //     const userRes = await fetch(`${url}/users/${id}`, {
+            //         method: 'GET',
+            //         headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
+            //     }).then((res) => res.json());
+            //     setUser(userRes);
+            // }
+
+            const activitiesRes = await fetch(url + '/activities' + ( id ? `?userId=${id}` : '' ), {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
+            })
+            .then((res) => res.json());
+            setActivities(activitiesRes);
+
+            const postsRes = await fetch(url + '/posts' + ( id ? `?userId=${id}` : '' ), {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
+            })
+            .then(res => res.json());
+            setPosts(postsRes);
+
+            const friendsRes = await fetch(url + '/users/friends' + ( id ? `?userId=${id}` : '' ), {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
+            })
+            .then(res => res.json());
+            setFriends(friendsRes);
+            setFilteredFriends(friendsRes);
         }
-        findPrincipalAndUser();
+        findAllData();
         // const findUser = async () => {
         //     await fetch(`${url}/users/${id}`, {
         //         method: 'GET',
@@ -119,6 +174,11 @@ function ProfileComponent() {
         // } else {
         //     findUser();
         // }
+
+
+
+
+
         // const findActivities = async () => {
         //     await fetch(`${url}/activities?userId=${getId()}`, {
         //         method: 'GET',
@@ -153,27 +213,33 @@ function ProfileComponent() {
         //     });
         // }
         // findFriends();
-        // if (!isMyProfile()) {
-        //     const checkIfIsMyFriend = async () => {
-        //         await fetch(`${url}/users/${id}/friends-with/${currentUser.id}`, {
-        //             method: 'GET',
-        //             headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
-        //         })
-        //         .then(res => res.json())
-        //         .then((res) => {
-        //             setIsMyConnection(res.isConnected);
-        //         })
-        //     }
-        //     checkIfIsMyFriend();
-        // }
+
+
+
+
+
+
+        if (!isMyProfile()) {
+            const checkIfIsMyFriend = async () => {
+                await fetch(`${url}/users/${id}/my-friend`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
+                })
+                .then(res => res.json())
+                .then((res) => {
+                    setIsMyConnection(res.isConnected);
+                })
+            }
+            checkIfIsMyFriend();
+        }
     },[]);
 
     const isDataReady = () => {
-        return currentUser && user && posts && friends;
+        return user && posts && friends && activities;
     }
 
     return (
-        <div className="outer-container">
+        localStorage.getItem('token') ? (<div className="outer-container">
             {
                 isDataReady() ? 
                 (<div className="container">
@@ -205,7 +271,7 @@ function ProfileComponent() {
                         </div>
                     </div>
                     <div className="profile-feed">
-                        <Feed posts={ posts } principalId={ principalId } shouldHideCreatePostBox={ !isMyProfile() }></Feed>
+                        <Feed posts={ posts } principalId={ localStorage.getItem('token') } shouldHideCreatePostBox={ !isMyProfile() }></Feed>
                     </div>
                     <div className="profile-friends">
                         <div className="friends-header">
@@ -216,8 +282,7 @@ function ProfileComponent() {
                     </div>
                 </div>) : (<div>Loading...</div>)
             }
-            
-        </div>
+        </div> ) : (<Redirect to="/login"></Redirect>)
     );
 }
 

@@ -5,7 +5,6 @@ import blueHeartIcon from '../resources/icons/heart-blue.svg';
 import redHeartIcon from '../resources/icons/heart-red.svg';
 
 function PostComponent(props) {
-
     const postUrl = "http://localhost:5000/posts";
     const likeUrl = "http://localhost:5000/likes";
 
@@ -26,7 +25,7 @@ function PostComponent(props) {
     const updatePostContent = async (content) => {
         await fetch(`${postUrl}/${props.post.id}/content`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
             body: JSON.stringify({ content: content }),
         });
     }
@@ -40,12 +39,14 @@ function PostComponent(props) {
 
     const likePost = async (postId) => {
         await fetch(`${likeUrl}?postId=${postId}`, {
+            headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
             method: 'POST',
         });
     }
 
     const unlikePost = async (postId) => {
-        await fetch(`${likeUrl}?postId=${postId}&userId=${props.principalId}`, {
+        await fetch(`${likeUrl}?postId=${postId}`, {
+            headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
             method: 'DELETE',
         });
     }
