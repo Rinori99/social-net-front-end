@@ -5,7 +5,6 @@ import People from '../components/People';
 import Listing from '../components/Listing';
 import qs from 'qs';
 import { Redirect } from 'react-router-dom/cjs/react-router-dom';
-import { async } from 'q';
 
 function mapHashtagsToListingItems(hashtags) {
     return hashtags.map(hashtag => {

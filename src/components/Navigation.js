@@ -1,6 +1,5 @@
 import React from "react";
 import '../style/style.css'
-import { BrowserRouter as Router, Switch, Route, Link, ListItemLink } from 'react-router-dom';
 
 function NavigationComponent() {
     const handleLogoutClick = () => {
