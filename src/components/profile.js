@@ -53,10 +53,6 @@ function ProfileComponent() {
         return isMyConnection;
     }
 
-    const getId = () => {
-        return isMyProfile() ? currentUser.id : id;
-    }
-
     const handleFriendshipButtonClick = () => {
         if (isMyConnection) {
             const removeFriend = async () => {
@@ -85,20 +81,8 @@ function ProfileComponent() {
         }
     }
 
-    useEffect(() => {
-        // findUser  if id present => findUserById, else find currentUser
-        // findActivities  
-
-
-
-
-        const findAllData = async () => {
-            // const currentUserRes = await fetch(`${url}/users/current`, {
-            //     method: 'GET',
-            //     headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
-            // });
-            // setCurrentUser(currentUserRes.json());
-
+    useEffect(() => { 
+        const findUpfrontData = async () => {
             if (id) {
                 await fetch(`${url}/users/${id}`, {
                     method: 'GET',
@@ -114,27 +98,6 @@ function ProfileComponent() {
                 .then(res => res.json())
                 .then(res => setUser(res));
             }
-
-
-
-
-
-
-
-
-
-
-
-
-            // if (isMyProfile()) {
-            //     setUser(currentUser);
-            // } else {
-            //     const userRes = await fetch(`${url}/users/${id}`, {
-            //         method: 'GET',
-            //         headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
-            //     }).then((res) => res.json());
-            //     setUser(userRes);
-            // }
 
             const activitiesRes = await fetch(url + '/activities' + ( id ? `?userId=${id}` : '' ), {
                 method: 'GET',
@@ -158,67 +121,8 @@ function ProfileComponent() {
             setFriends(friendsRes);
             setFilteredFriends(friendsRes);
         }
-        findAllData();
-        // const findUser = async () => {
-        //     await fetch(`${url}/users/${id}`, {
-        //         method: 'GET',
-        //         headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
-        //     })
-        //     .then((res) => res.json())
-        //     .then((res) => {
-        //         setUser(res);
-        //     });
-        // };
-        // if (isMyProfile()) {
-        //     setUser(currentUser);
-        // } else {
-        //     findUser();
-        // }
-
-
-
-
-
-        // const findActivities = async () => {
-        //     await fetch(`${url}/activities?userId=${getId()}`, {
-        //         method: 'GET',
-        //         headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
-        //     })
-        //     .then((res) => res.json())
-        //     .then((res) => { 
-        //         setActivities(res);
-        //     });
-        // }
-        // findActivities();
-        // const findPosts = async () => {
-        //     await fetch(`${url}/posts?userId=${getId()}`, {
-        //         method: 'GET',
-        //         headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
-        //     })
-        //     .then(res => res.json())
-        //     .then((res) => {
-        //         setPosts(res);
-        //     });
-        // }
-        // findPosts();
-        // const findFriends = async () => {
-        //     await fetch(`${url}/users/${getId()}/friends`, {
-        //         method: 'GET',
-        //         headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
-        //     })
-        //     .then(res => res.json())
-        //     .then((res) => {
-        //         setFriends(res);
-        //         setFilteredFriends(res);
-        //     });
-        // }
-        // findFriends();
-
-
-
-
-
-
+        findUpfrontData();
+        
         if (!isMyProfile()) {
             const checkIfIsMyFriend = async () => {
                 await fetch(`${url}/users/${id}/my-friend`, {

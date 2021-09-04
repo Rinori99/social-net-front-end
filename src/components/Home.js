@@ -5,6 +5,7 @@ import People from '../components/People';
 import Listing from '../components/Listing';
 import qs from 'qs';
 import { Redirect } from 'react-router-dom/cjs/react-router-dom';
+import { async } from 'q';
 
 function mapHashtagsToListingItems(hashtags) {
     return hashtags.map(hashtag => {
@@ -21,6 +22,7 @@ function HomeComponent(props) {
     const [hashtags, setHashtags] = useState([]);
     const [friends, setFriends] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
+    const [currentUser, setCurrentUser] = useState(null);
 
     const handleChange = (e) => {
         const inputValue = e.target.value;
@@ -46,6 +48,18 @@ function HomeComponent(props) {
     }
 
     useEffect(() => {
+        const findCurrentUser = async () => {
+            await fetch(`${url}/users/current`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token') },
+            })
+            .then(res => res.json())
+            .then((res) => {
+                setCurrentUser(res);
+            });
+        }
+
+
         const findPosts = async () => {
             await fetch(`${url}/posts/feed`, {
                 method: 'GET',
@@ -93,6 +107,7 @@ function HomeComponent(props) {
 
         const hashtag = retrieveHashtag();
 
+        findCurrentUser();
         findTrendyHashtags();
         if (hashtag) {
             findPostsByHashtag(hashtag);
@@ -120,8 +135,8 @@ function HomeComponent(props) {
                     </div>
                     <div className="profile-feed">
                         {
-                            posts ?
-                            (<Feed isHashtagPage={ retrieveHashtag() } posts={ posts } principalId={ localStorage.getItem('token') }></Feed>)
+                            (posts && currentUser) ?
+                            (<Feed isHashtagPage={ retrieveHashtag() } posts={ posts } principalId={ currentUser.id }></Feed>)
                             : (<div>Loading...</div>)
                         }
                     </div>
