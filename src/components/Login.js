@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import './auth.css'
-import './profile-style.css'
+import '../style/auth.css';
+import '../style/style.css';
 import { Redirect } from 'react-router-dom/cjs/react-router-dom';
 
 function LoginComponent() {

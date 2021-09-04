@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import './profile-style.css'
+import '../style/style.css';
 import profilepic from '../resources/images/profile.jpeg';
-import Feed from '../components/Feed';
-import People from '../components/People';
-import Listing from '../components/Listing';
+import Feed from './Feed';
+import People from './People';
+import Listing from './Listing';
 import { Redirect } from 'react-router-dom/cjs/react-router-dom';
 
 function mapActivitiesToListingItems(activities) {

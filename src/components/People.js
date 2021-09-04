@@ -1,5 +1,5 @@
 import React from 'react';
-import './profile-style.css'
+import '../style/style.css'
 import profilepic from '../resources/images/profile.jpeg';
 
 function PeopleComponent(props) {

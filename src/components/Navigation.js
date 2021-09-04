@@ -1,5 +1,5 @@
 import React from "react";
-import './profile-style.css'
+import '../style/style.css'
 import { BrowserRouter as Router, Switch, Route, Link, ListItemLink } from 'react-router-dom';
 
 function NavigationComponent() {

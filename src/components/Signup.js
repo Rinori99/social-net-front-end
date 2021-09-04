@@ -1,6 +1,6 @@
 import React from 'react';
-import './auth.css'
-import './profile-style.css'
+import '../style/auth.css'
+import '../style/style.css'
 import { useHistory } from 'react-router-dom';
 import { Redirect } from 'react-router-dom/cjs/react-router-dom';
 

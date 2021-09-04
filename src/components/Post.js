@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './profile-style.css'
+import '../style/style.css';
 import profilepic from '../resources/images/profile.jpeg';
 import blueHeartIcon from '../resources/icons/heart-blue.svg';
 import redHeartIcon from '../resources/icons/heart-red.svg';
@@ -19,7 +19,6 @@ function PostComponent(props) {
 
     const handleEditClick = () => {
         setEditMode(true);
-
     }
 
     const updatePostContent = async (content) => {

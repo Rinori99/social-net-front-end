@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './profile-style.css'
+import '../style/style.css'
 import Post from '../components/Post';
 
 function FeedComponent(props) {

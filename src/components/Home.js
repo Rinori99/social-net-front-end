@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './profile-style.css'
+import '../style/style.css'
 import Feed from '../components/Feed';
 import People from '../components/People';
 import Listing from '../components/Listing';

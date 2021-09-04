@@ -1,5 +1,5 @@
 import React from 'react';
-import './profile-style.css'
+import '../style/style.css'
 
 function ListingComponent(props) {
 
