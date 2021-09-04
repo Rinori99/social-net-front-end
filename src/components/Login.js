@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import './auth.css'
 import './profile-style.css'
+import { Redirect } from 'react-router-dom/cjs/react-router-dom';
 
 function LoginComponent() {
 
@@ -33,7 +34,7 @@ function LoginComponent() {
     }
 
     return (
-        <div className="wrapper">
+        !localStorage.getItem('token') ? (<div className="wrapper">
             <div className="form-signin">
                 <a href="signup">Sign Up</a>
                 <h2 className="form-signin-heading">Please login</h2>
@@ -42,7 +43,7 @@ function LoginComponent() {
                 <button className="form-login-btn sn-btn" onClick={ handleLoginClick }>Login</button>
                 { shouldShowWrongCredentials ? (<h4 className="wrong-auth">Wrong email or password, please try again!</h4>) : ""}
             </div>
-        </div>
+        </div>) : (<Redirect to="/browse/home"></Redirect>)
     );
 }
 
